@@ -101,6 +101,16 @@ html, body { width:100%; height:100%; overflow:hidden; font-family:'Helvetica Ne
 
 #plotinfo { font-size:12px; color:#555; min-height:30px; }
 
+/* ── Search ── */
+#searchInput { width:100%; padding:6px 8px; border:1px solid #bbb; border-radius:3px; font-size:12px; margin-bottom:4px; }
+#searchResults { max-height:200px; overflow-y:auto; }
+.search-item { padding:5px 6px; border-bottom:1px solid #eee; cursor:pointer; }
+.search-item:hover { background:#e8f5e9; }
+.search-name { font-size:12px; font-weight:bold; color:#333; display:block; }
+.search-path { font-size:10px; color:#888; display:block; }
+.search-noresult { font-size:11px; color:#999; padding:4px 0; text-align:center; }
+.search-more { font-size:10px; color:#aaa; padding:4px 0; text-align:center; font-style:italic; }
+
 /* ── Map ── */
 #map {
   position:fixed; top:40px; left:40px; right:0; bottom:0; z-index:1;

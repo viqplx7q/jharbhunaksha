@@ -247,6 +247,64 @@ function selectTheme(el, theme) {
   el.classList.add('active');
 }
 
+/* ── Search ── */
+var searchTimer = null;
+function doSearch(q) {
+  clearTimeout(searchTimer);
+  var el = document.getElementById('searchResults');
+  if (!q || q.length < 2) { el.innerHTML = ''; return; }
+  searchTimer = setTimeout(function() { performSearch(q); }, 300);
+}
+
+function performSearch(q) {
+  var el = document.getElementById('searchResults');
+  q = q.toLowerCase();
+  var results = [];
+  var maxResults = 30;
+  for (var dk in JHARKHAND) {
+    var d = JHARKHAND[dk];
+    for (var ck in d.circles) {
+      for (var hk in d.circles[ck].halkas) {
+        for (var mi = 0; mi < d.circles[ck].halkas[hk].mouzas.length; mi++) {
+          var m = d.circles[ck].halkas[hk].mouzas[mi];
+          var mcode = m[0], mname = m[1];
+          if (mname.toLowerCase().indexOf(q) !== -1 || mcode.indexOf(q) !== -1) {
+            results.push({dcode:dk, dname:d.name, ccode:ck, cname:d.circles[ck].name, hcode:hk, hname:d.circles[ck].halkas[hk].name, mcode:mcode, mname:mname});
+            if (results.length >= maxResults) break;
+          }
+        }
+        if (results.length >= maxResults) break;
+      }
+      if (results.length >= maxResults) break;
+    }
+    if (results.length >= maxResults) break;
+  }
+  if (results.length === 0) { el.innerHTML = '<div class="search-noresult">No result found</div>'; return; }
+  var html = '';
+  for (var i = 0; i < results.length; i++) {
+    var r = results[i];
+    html += '<div class="search-item" onclick="selectFromSearch(\''+r.dcode+'\',\''+r.ccode+'\',\''+r.hcode+'\',\''+r.mcode+'\')">';
+    html += '<span class="search-name">'+r.mcode+' - '+r.mname+'</span>';
+    html += '<span class="search-path">'+r.dname+' &gt; '+r.cname+' &gt; '+r.hname+'</span>';
+    html += '</div>';
+  }
+  if (results.length >= maxResults) html += '<div class="search-more">... more results (narrow your search)</div>';
+  el.innerHTML = html;
+}
+
+function selectFromSearch(dcode, ccode, hcode, mcode) {
+  document.getElementById('searchInput').value = '';
+  document.getElementById('searchResults').innerHTML = '';
+  document.getElementById('sel_dist').value = dcode;
+  onDistrictChange();
+  document.getElementById('sel_circle').value = ccode;
+  populateHalkas();
+  document.getElementById('sel_halka').value = hcode;
+  populateMouzas();
+  document.getElementById('sel_mouza').value = mcode;
+  enableGo();
+  loadMap();
+}
 /* ── Init ── */
 document.getElementById('sel_dist').addEventListener('change', onDistrictChange);
 document.getElementById('sel_mouza').addEventListener('keydown', function(e){if(e.key==='Enter')loadMap();});
