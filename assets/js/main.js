@@ -333,30 +333,34 @@ function setClickMarker(coordinate) {
 }
 
 /* ── Init ── */
-document.getElementById('sel_dist').addEventListener('change', onDistrictChange);
-document.getElementById('sel_mouza').addEventListener('keydown', function(e){if(e.key==='Enter')loadMap();});
+var loadEl = document.getElementById('loading-overlay');
+if (loadEl) loadEl.style.display = 'none';
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('sel_dist').addEventListener('change', onDistrictChange);
+  document.getElementById('sel_mouza').addEventListener('keydown', function(e){if(e.key==='Enter')loadMap();});
 
-document.getElementById('sel_circle').addEventListener('change',function(){populateHalkas();populateMouzas();enableGo();});
-document.getElementById('sel_halka').addEventListener('change',function(){populateMouzas();enableGo();});
-document.getElementById('sel_mouza').addEventListener('change',enableGo);
+  document.getElementById('sel_circle').addEventListener('change',function(){populateHalkas();populateMouzas();enableGo();});
+  document.getElementById('sel_halka').addEventListener('change',function(){populateMouzas();enableGo();});
+  document.getElementById('sel_mouza').addEventListener('change',enableGo);
 
-// Show home pane, populate districts
-showPane('home');
-populateDistricts();
-onDistrictChange();
+  // Show home pane, populate districts
+  showPane('home');
+  populateDistricts();
+  onDistrictChange();
 
-// Update About coverage after load
-var totalCircles = 0, totalHalkas = 0, totalMouzas = 0;
-var dcount = 0;
-for (var dk in JHARKHAND) {
-  dcount++;
-  var d = JHARKHAND[dk];
-  for (var ck in d.circles) {
-    totalCircles++;
-    for (var hk in d.circles[ck].halkas) {
-      totalHalkas++;
-      totalMouzas += d.circles[ck].halkas[hk].mouzas.length;
+  // Update About coverage after load
+  var totalCircles = 0, totalHalkas = 0, totalMouzas = 0;
+  var dcount = 0;
+  for (var dk in JHARKHAND) {
+    dcount++;
+    var d = JHARKHAND[dk];
+    for (var ck in d.circles) {
+      totalCircles++;
+      for (var hk in d.circles[ck].halkas) {
+        totalHalkas++;
+        totalMouzas += d.circles[ck].halkas[hk].mouzas.length;
+      }
     }
   }
-}
-document.getElementById('about-coverage').innerHTML = '<b>Coverage:</b> '+dcount+' Districts, '+totalCircles+' Circles, '+totalHalkas+' Halkas, '+totalMouzas+' Mouzas';
+  document.getElementById('about-coverage').innerHTML = '<b>Coverage:</b> '+dcount+' Districts, '+totalCircles+' Circles, '+totalHalkas+' Halkas, '+totalMouzas+' Mouzas';
+});
